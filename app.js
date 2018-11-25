@@ -7,7 +7,7 @@ var cors = require('cors')
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/noteapp', {
-    useMongoClient: true
+    // useMongoClient: true
 });
 
 
@@ -27,16 +27,38 @@ app.post('/save', (req, res) => {
     res.send("ok")
 })
 
+// app.post('/rewrite', (req, res) => {
+//     var body = _.pick(req.body, ['context', 'user'])
+//     Post.findOneAndUpdate({ user: 'user' }, { $set: { context: body.context } }, { new: true }, (err, doc) => {
+//         if (err) {
+//             console.log("Something wrong when updating data!");
+//         }
+
+//         console.log(doc);
+//     })
+//     res.send(body)
+// })
+
 app.post('/rewrite', (req, res) => {
     var body = _.pick(req.body, ['context', 'user'])
-    Post.findOneAndUpdate({ user: 'user' }, { $set: { context: body.context } }, { new: true }, (err, doc) => {
-        if (err) {
-            console.log("Something wrong when updating data!");
+    Post.findOneAndUpdate({ user: 'user' }, { $set: { context: body.context } },{ new: true }, function(error, result) {
+        if (!error) {
+            // If the document doesn't exist
+            if (!result) {
+                
+                result = new Post({user:body.user,context:body.context});
+            
+            }
+            // Save the document
+            result.save(function(error) {
+                if (!error) {
+                    // Do something with the document
+                } else {
+                    throw error;
+                }
+            });
         }
-
-        console.log(doc);
-    })
-    res.send(body)
+    });
 })
 
 
