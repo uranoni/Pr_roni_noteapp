@@ -10,6 +10,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/noteapp', {
     // useMongoClient: true
 });
+//新增一個express的function叫做app物件
 var app = express();
 app.use(cors())
 app.use(express.static(__dirname + '/www'));
